@@ -1,2 +1,6 @@
 # Timer-PLHKS
 just a stopwatch and timer. loads of eggs
+Did you read this
+do people actually read READMEs?
+click dark/bright mode button 6 times for a cookie.
+there is another egg, but im not gonna tell you.
