@@ -17,28 +17,16 @@
             user-select: none;
             transition: none;
         }
-        body.dark {
-            background: #1a1a1a !important;
-            color: #d5d5d5;
-        }
+        body.dark { background: #1a1a1a !important; color: #d5d5d5; }
         .rainbow-bg {
             background: linear-gradient(90deg,
                 #ff3333, #ff9933, #ffff33, #33ff33, #33ffff, #3333ff, #cc33ff, #ff33cc, #ff3333);
             background-size: 200% 100%;
             animation: rainbowFlow 4s linear infinite;
         }
-        @keyframes rainbowFlow {
-            0%   { background-position: 0% 50%; }
-            100% { background-position: 200% 50%; }
-        }
-        .container {
-            max-width: 900px;
-            margin: 10px auto;
-            padding: 15px;
-            background: inherit;
-            position: relative;
-            z-index: 1;
-        }
+        @keyframes rainbowFlow { 0% { background-position: 0% 50%; } 100% { background-position: 200% 50%; } }
+
+        .container { max-width: 900px; margin: 10px auto; padding: 15px; background: inherit; position: relative; z-index: 1; }
         h1 {
             font-size: clamp(1.8em, 6vw, 2.6em);
             border-bottom: 1px solid #a2a9b1;
@@ -46,23 +34,10 @@
             margin-bottom: 15px;
             background: linear-gradient(90deg,
                 #ff0000, #ff7f00, #ffff00, #00ff00, #00ffff, #0000ff, #8b00ff, #ff00ff, #ff0000);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            font-weight: bold;
-            text-align: center;
-            background-size: 200% 100%;
-            animation: rainbowFlow 6s linear infinite;
-            letter-spacing: 1px;
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+            font-weight: bold; text-align: center; background-size: 200% 100%; animation: rainbowFlow 6s linear infinite; letter-spacing: 1px;
         }
-        #display {
-            font-size: clamp(36px, 12vw, 54px);
-            text-align: center;
-            font-weight: bold;
-            margin: 15px 0;
-            font-family: monospace;
-            transition: color 0s;
-        }
+        #display { font-size: clamp(36px, 12vw, 54px); text-align: center; font-weight: bold; margin: 15px 0; font-family: monospace; transition: color 0s; }
 
         /* Progress bar for the 67 easter */
         .progress-wrap { width: 100%; max-width: 760px; margin: 8px auto 0; padding: 0 10px; }
@@ -73,135 +48,43 @@
             border-bottom: 14px solid #ff1a1a; top: -12px; transform-origin: 50% 50%;
             animation: spin 1s linear infinite;
         }
-        @keyframes spin { from {transform: rotate(0deg)} to {transform: rotate(360deg)} }
+        @keyframes spin { from { transform: rotate(0deg) } to { transform: rotate(360deg) } }
         .hidden { display: none; }
 
-        .time-input {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 8px 12px;
-            margin: 15px 0;
-            padding: 0 10px;
-            font-family: monospace;
-        }
-        .time-unit {
-            width: 70px;
-            padding: 10px;
-            font-size: 18px;
-            text-align: center;
-            border: 1px solid #a2a9b1;
-            border-radius: 6px;
-            background: white;
-        }
+        .time-input { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px 12px; margin: 15px 0; padding: 0 10px; font-family: monospace; }
+        .time-unit { width: 70px; padding: 10px; font-size: 18px; text-align: center; border: 1px solid #a2a9b1; border-radius: 6px; background: white; }
         body.dark .time-unit { background: #333; border-color: #555; color: #fff; }
-        .time-label {
-            font-size: 13px;
-            color: #54595d;
-            align-self: center;
-            min-width: 60px;
-            text-align: center;
-        }
+        .time-label { font-size: 13px; color: #54595d; align-self: center; min-width: 60px; text-align: center; }
         body.dark .time-label { color: #aaa; }
-        #controls {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 10px;
-            margin: 15px 0;
-        }
-        button {
-            padding: 12px 16px;
-            font-size: clamp(14px, 4vw, 18px);
-            min-height: 48px;
-            touch-action: manipulation;
-            border-radius: 6px;
-            cursor: pointer;
-            border: 1px solid #a2a9b1;
-            background: #f8f9fa;
-        }
+
+        #controls { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin: 15px 0; }
+        button { padding: 12px 16px; font-size: clamp(14px, 4vw, 18px); min-height: 48px; touch-action: manipulation; border-radius: 6px; cursor: pointer; border: 1px solid #a2a9b1; background: #f8f9fa; }
         body.dark button { background: #333; border-color: #555; color: #fff; }
+
         #themeBtn { position: relative; }
-        #hiddenSquare {
-            width: 20px; height: 20px;
-            border: 1px solid #f0f0f0;
-            background: transparent;
-            cursor: pointer;
-            position: absolute;
-            bottom: -28px;
-            right: 8px;
-            z-index: 10;
-        }
+        #hiddenSquare { width: 20px; height: 20px; border: 1px solid #f0f0f0; background: transparent; cursor: pointer; position: absolute; bottom: -28px; right: 8px; z-index: 10; }
         body.dark #hiddenSquare { border-color: #2a2a2a; }
 
         /* THINNER COLOR SLIDER */
         #colorSlider {
-            display: none;
-            width: 90vw;
-            max-width: 320px;
-            height: 8px; /* Thinner bar */
-            margin: 15px auto;
-            border-radius: 4px;
-            background: linear-gradient(to right,
-                #ff0000, #ff7f00, #ffff00, #00ff00, #00ffff, #0000ff, #8b00ff, #ff00ff, #ff0000);
-            -webkit-appearance: none;
-            outline: none;
-            cursor: pointer;
+            display: none; width: 90vw; max-width: 320px; height: 8px; margin: 15px auto; border-radius: 4px;
+            background: linear-gradient(to right,#ff0000,#ff7f00,#ffff00,#00ff00,#00ffff,#0000ff,#8b00ff,#ff00ff,#ff0000);
+            -webkit-appearance: none; outline: none; cursor: pointer;
         }
         #colorSlider::-webkit-slider-thumb {
-            -webkit-appearance: none;
-            width: 32px; height: 32px; /* Bigger than bar */
-            border-radius: 50%;
-            background: white;
-            border: 3px solid #333;
-            cursor: grab;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+            -webkit-appearance: none; width: 32px; height: 32px; border-radius: 50%; background: white; border: 3px solid #333; cursor: grab; box-shadow: 0 2px 6px rgba(0,0,0,0.3);
         }
         #colorSlider::-moz-range-thumb {
-            width: 32px; height: 32px;
-            border-radius: 50%;
-            background: white;
-            border: 3px solid #333;
-            cursor: grab;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+            width: 32px; height: 32px; border-radius: 50%; background: white; border: 3px solid #333; cursor: grab; box-shadow: 0 2px 6px rgba(0,0,0,0.3);
         }
 
-        #secret {
-            position: absolute;
-            bottom: 10px;
-            left: 0;
-            width: 100%;
-            text-align: center;
-            font-size: 14px;
-            color: transparent;
-            user-select: text;
-            pointer-events: none;
-            z-index: -1;
-        }
+        #secret { position: absolute; bottom: 10px; left: 0; width: 100%; text-align: center; font-size: 14px; color: transparent; user-select: text; pointer-events: none; z-index: -1; }
+
         #flashWarning {
-            position: fixed;
-            top: 0; left: 0;
-            width: 100vw; height: 100vh;
-            background: rgba(0,0,0,0.92);
-            color: #fff;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            z-index: 9999;
-            padding: 20px;
-            text-align: center;
-            font-size: clamp(1em, 4vw, 1.4em);
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.92); color: #fff;
+            display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 9999; padding: 20px; text-align: center; font-size: clamp(1em, 4vw, 1.4em);
         }
-        #flashWarning button {
-            margin-top: 20px;
-            padding: 14px 28px;
-            font-size: 1.2em;
-            background: #ff4444;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-        }
+        #flashWarning button { margin-top: 20px; padding: 14px 28px; font-size: 1.2em; background: #ff4444; border: none; border-radius: 8px; cursor: pointer; }
     </style>
 </head>
 <body>
@@ -229,7 +112,6 @@
         <div class="time-input" id="timeInputContainer">
             <input type="number" class="time-unit" id="hours" min="0" max="99" value="0">
             <span class="time-label">hours</span>
-            <!-- changed max to 99 so JS can manage special case -->
             <input type="number" class="time-unit" id="minutes" min="0" max="99" value="0">
             <span class="time-label">minutes</span>
             <input type="number" class="time-unit" id="seconds" min="0" max="99" value="0">
@@ -325,7 +207,6 @@
             }, 500);
             setTimeout(stopFlashing, 6000);
         }
-
         function stopFlashing() {
             if (flashInterval) clearInterval(flashInterval);
             body.style.background = originalBg;
@@ -363,13 +244,12 @@
                     const m = +minutesInput.value || 0;
                     const s = +secondsInput.value || 0;
 
-                    // Allow special triple-67
                     const isSpecialTriple67 = (h === 67 && m === 67 && s === 67);
 
                     time = h * 3600 + m * 60 + s;
                     if (!time && !isSpecialTriple67) return;
 
-                    // Trigger showing progress bar only when triple-67 and double press
+                    // Double-press trigger for progress bar
                     if (!isRunning && isSpecialTriple67 && startPressCount === 2) {
                         totalDuration = time || 1;
                         showProgressBar();
@@ -400,26 +280,40 @@
             reset();
         }
 
+        // Reliable 5-click rainbow trigger within 3 seconds, plus dark/bright toggle
         function switchTheme() {
             checkSequence('theme');
+
+            // Toggle dark/bright
+            isDark = !isDark;
+            isDark ? body.classList.add('dark') : body.classList.remove('dark');
+            themeBtn.textContent = isDark ? 'Bright Mode' : 'Dark Mode';
+            originalBg = isDark ? '#1a1a1a' : '#ffffff';
+
+            // Count clicks in a 3s window
             themeClickCount++;
+            if (themeClickCount === 1) {
+                if (window.__themeWindowTimer) clearTimeout(window.__themeWindowTimer);
+                window.__themeWindowTimer = setTimeout(() => {
+                    themeClickCount = 0;
+                    window.__themeWindowTimer = null;
+                }, 3000);
+            }
             if (themeClickCount === 5) {
+                themeClickCount = 0;
+                if (window.__themeWindowTimer) {
+                    clearTimeout(window.__themeWindowTimer);
+                    window.__themeWindowTimer = null;
+                }
                 body.classList.add('rainbow-bg');
                 rainbowBgActive = true;
                 setTimeout(() => {
                     if (rainbowBgActive) {
                         body.classList.remove('rainbow-bg');
                         rainbowBgActive = false;
-                        themeClickCount = 0;
                     }
                 }, 8000);
             }
-            setTimeout(() => { if (themeClickCount < 5) themeClickCount = 0; }, 3000);
-
-            isDark = !isDark;
-            isDark ? body.classList.add('dark') : body.classList.remove('dark');
-            themeBtn.textContent = isDark ? 'Bright Mode' : 'Dark Mode';
-            originalBg = isDark ? '#1a1a1a' : '#ffffff';
         }
 
         function toggleFullScreen() {
@@ -432,7 +326,6 @@
             checkSequence('hidden');
             slider.style.display = 'block';
         });
-
         slider.oninput = function () {
             const hue = this.value;
             display.style.color = hslToRgb(hue, 1, 0.5);
@@ -476,10 +369,10 @@
             const cx = r.left + w / 2, cy = r.top + h / 2;
             const dx = mouseX - cx, dy = mouseY - cy;
             const dist = Math.hypot(dx, dy);
-            if (dist < 300) {
+            if (dist < 360) { // wider reaction radius
                 const ang = Math.atan2(dy, dx) + Math.PI;
-                // FASTER: base speed 0.5 → 0.8, max 3.5
-                const speed = Math.max(0.8, 3.5 - dist / 100);
+                // Faster but controlled
+                const speed = Math.max(1.2, 4.2 - dist / 90);
                 let nx = parseFloat(startBtn.style.left) + Math.cos(ang) * speed;
                 let ny = parseFloat(startBtn.style.top) + Math.sin(ang) * speed;
                 const ww = window.innerWidth, wh = window.innerHeight;
@@ -490,17 +383,19 @@
             }
         }
 
-        // 67 easter: input enforcement (allow 67 only if all three are 67)
+        // 67 easter: input enforcement (allow entering 67 one by one; clamp others to 59)
         function enforceInputs() {
             const h = Number(hoursInput.value || 0);
             const m = Number(minutesInput.value || 0);
             const s = Number(secondsInput.value || 0);
-            const isSpecial67 = (h === 67 && m === 67 && s === 67);
 
-            if (!isSpecial67) {
-                if (m > 59) minutesInput.value = 59;
-                if (s > 59) secondsInput.value = 59;
-            }
+            // If all three are 67, allow 67 and do nothing
+            if (h === 67 && m === 67 && s === 67) return;
+
+            // Otherwise clamp minutes/seconds to 59
+            if (m > 59) minutesInput.value = 59;
+            if (s > 59) secondsInput.value = 59;
+
             if (hoursInput.value === '') hoursInput.value = 0;
             if (minutesInput.value === '') minutesInput.value = 0;
             if (secondsInput.value === '') secondsInput.value = 0;
