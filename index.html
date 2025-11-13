@@ -17,16 +17,28 @@
             user-select: none;
             transition: none;
         }
-        body.dark { background: #1a1a1a !important; color: #d5d5d5; }
+        body.dark {
+            background: #1a1a1a !important;
+            color: #d5d5d5;
+        }
         .rainbow-bg {
             background: linear-gradient(90deg,
                 #ff3333, #ff9933, #ffff33, #33ff33, #33ffff, #3333ff, #cc33ff, #ff33cc, #ff3333);
             background-size: 200% 100%;
             animation: rainbowFlow 4s linear infinite;
         }
-        @keyframes rainbowFlow { 0% { background-position: 0% 50%; } 100% { background-position: 200% 50%; } }
-
-        .container { max-width: 900px; margin: 10px auto; padding: 15px; background: inherit; position: relative; z-index: 1; }
+        @keyframes rainbowFlow {
+            0%   { background-position: 0% 50%; }
+            100% { background-position: 200% 50%; }
+        }
+        .container {
+            max-width: 900px;
+            margin: 10px auto;
+            padding: 15px;
+            background: inherit;
+            position: relative;
+            z-index: 1;
+        }
         h1 {
             font-size: clamp(1.8em, 6vw, 2.6em);
             border-bottom: 1px solid #a2a9b1;
@@ -34,10 +46,23 @@
             margin-bottom: 15px;
             background: linear-gradient(90deg,
                 #ff0000, #ff7f00, #ffff00, #00ff00, #00ffff, #0000ff, #8b00ff, #ff00ff, #ff0000);
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
-            font-weight: bold; text-align: center; background-size: 200% 100%; animation: rainbowFlow 6s linear infinite; letter-spacing: 1px;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: bold;
+            text-align: center;
+            background-size: 200% 100%;
+            animation: rainbowFlow 6s linear infinite;
+            letter-spacing: 1px;
         }
-        #display { font-size: clamp(36px, 12vw, 54px); text-align: center; font-weight: bold; margin: 15px 0; font-family: monospace; transition: color 0s; }
+        #display {
+            font-size: clamp(36px, 12vw, 54px);
+            text-align: center;
+            font-weight: bold;
+            margin: 15px 0;
+            font-family: monospace;
+            transition: color 0s;
+        }
 
         /* Progress bar for the 67 easter */
         .progress-wrap { width: 100%; max-width: 760px; margin: 8px auto 0; padding: 0 10px; }
@@ -48,21 +73,32 @@
             border-bottom: 14px solid #ff1a1a; top: -12px; transform-origin: 50% 50%;
             animation: spin 1s linear infinite;
         }
-        @keyframes spin { from { transform: rotate(0deg) } to { transform: rotate(360deg) } }
+        @keyframes spin { from {transform: rotate(0deg)} to {transform: rotate(360deg)} }
         .hidden { display: none; }
 
-        .time-input { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px 12px; margin: 15px 0; padding: 0 10px; font-family: monospace; }
-        .time-unit { width: 70px; padding: 10px; font-size: 18px; text-align: center; border: 1px solid #a2a9b1; border-radius: 6px; background: white; }
+        .time-input {
+            display: flex; flex-wrap: wrap; justify-content: center; gap: 8px 12px; margin: 15px 0; padding: 0 10px; font-family: monospace;
+        }
+        .time-unit {
+            width: 70px; padding: 10px; font-size: 18px; text-align: center;
+            border: 1px solid #a2a9b1; border-radius: 6px; background: white;
+        }
         body.dark .time-unit { background: #333; border-color: #555; color: #fff; }
         .time-label { font-size: 13px; color: #54595d; align-self: center; min-width: 60px; text-align: center; }
         body.dark .time-label { color: #aaa; }
 
         #controls { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin: 15px 0; }
-        button { padding: 12px 16px; font-size: clamp(14px, 4vw, 18px); min-height: 48px; touch-action: manipulation; border-radius: 6px; cursor: pointer; border: 1px solid #a2a9b1; background: #f8f9fa; }
+        button {
+            padding: 12px 16px; font-size: clamp(14px, 4vw, 18px); min-height: 48px;
+            touch-action: manipulation; border-radius: 6px; cursor: pointer; border: 1px solid #a2a9b1; background: #f8f9fa;
+        }
         body.dark button { background: #333; border-color: #555; color: #fff; }
 
         #themeBtn { position: relative; }
-        #hiddenSquare { width: 20px; height: 20px; border: 1px solid #f0f0f0; background: transparent; cursor: pointer; position: absolute; bottom: -28px; right: 8px; z-index: 10; }
+        #hiddenSquare {
+            width: 20px; height: 20px; border: 1px solid #f0f0f0; background: transparent; cursor: pointer;
+            position: absolute; bottom: -28px; right: 8px; z-index: 10;
+        }
         body.dark #hiddenSquare { border-color: #2a2a2a; }
 
         /* THINNER COLOR SLIDER */
@@ -71,12 +107,8 @@
             background: linear-gradient(to right,#ff0000,#ff7f00,#ffff00,#00ff00,#00ffff,#0000ff,#8b00ff,#ff00ff,#ff0000);
             -webkit-appearance: none; outline: none; cursor: pointer;
         }
-        #colorSlider::-webkit-slider-thumb {
-            -webkit-appearance: none; width: 32px; height: 32px; border-radius: 50%; background: white; border: 3px solid #333; cursor: grab; box-shadow: 0 2px 6px rgba(0,0,0,0.3);
-        }
-        #colorSlider::-moz-range-thumb {
-            width: 32px; height: 32px; border-radius: 50%; background: white; border: 3px solid #333; cursor: grab; box-shadow: 0 2px 6px rgba(0,0,0,0.3);
-        }
+        #colorSlider::-webkit-slider-thumb { -webkit-appearance: none; width: 32px; height: 32px; border-radius: 50%; background: white; border: 3px solid #333; cursor: grab; box-shadow: 0 2px 6px rgba(0,0,0,0.3); }
+        #colorSlider::-moz-range-thumb { width: 32px; height: 32px; border-radius: 50%; background: white; border: 3px solid #333; cursor: grab; box-shadow: 0 2px 6px rgba(0,0,0,0.3); }
 
         #secret { position: absolute; bottom: 10px; left: 0; width: 100%; text-align: center; font-size: 14px; color: transparent; user-select: text; pointer-events: none; z-index: -1; }
 
@@ -282,42 +314,7 @@
 
         // Reliable 5-click rainbow trigger within 3 seconds, plus dark/bright toggle
         function switchTheme() {
-    checkSequence('theme');
-
-    // Toggle dark/bright mode
-    isDark = !isDark;
-    isDark ? body.classList.add('dark') : body.classList.remove('dark');
-    themeBtn.textContent = isDark ? 'Bright Mode' : 'Dark Mode';
-    originalBg = isDark ? '#1a1a1a' : '#ffffff';
-
-    // Rainbow trigger: count clicks in a 3s window
-    themeClickCount++;
-
-    if (themeClickCount === 1) {
-        if (window.__themeWindowTimer) clearTimeout(window.__themeWindowTimer);
-        window.__themeWindowTimer = setTimeout(() => {
-            themeClickCount = 0;
-            window.__themeWindowTimer = null;
-        }, 3000);
-    }
-
-    if (themeClickCount === 5) {
-        themeClickCount = 0;
-        if (window.__themeWindowTimer) {
-            clearTimeout(window.__themeWindowTimer);
-            window.__themeWindowTimer = null;
-        }
-        body.classList.add('rainbow-bg');
-        rainbowBgActive = true;
-        setTimeout(() => {
-            if (rainbowBgActive) {
-                body.classList.remove('rainbow-bg');
-                rainbowBgActive = false;
-            }
-        }, 8000);
-    }
-}
-
+            checkSequence('theme');
 
             // Toggle dark/bright
             isDark = !isDark;
@@ -404,9 +401,9 @@
             const cx = r.left + w / 2, cy = r.top + h / 2;
             const dx = mouseX - cx, dy = mouseY - cy;
             const dist = Math.hypot(dx, dy);
-            if (dist < 360) { // wider reaction radius
+            if (dist < 360) {
                 const ang = Math.atan2(dy, dx) + Math.PI;
-                // Faster but controlled
+                // Faster but controlled near cursor
                 const speed = Math.max(1.2, 4.2 - dist / 90);
                 let nx = parseFloat(startBtn.style.left) + Math.cos(ang) * speed;
                 let ny = parseFloat(startBtn.style.top) + Math.sin(ang) * speed;
@@ -418,7 +415,7 @@
             }
         }
 
-        // 67 easter: input enforcement (allow entering 67 one by one; clamp others to 59)
+        // 67 easter: input enforcement (allow entering 67 sequentially; clamp otherwise)
         function enforceInputs() {
             const h = Number(hoursInput.value || 0);
             const m = Number(minutesInput.value || 0);
@@ -503,4 +500,3 @@
     </script>
 </body>
 </html>
-
