@@ -1,206 +1,38 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>PLHKS Timer</title>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        body {
-            font-family: 'Linux Libertine', Georgia, serif;
-            background: #ffffff;
-            color: #000000;
-            margin: 0;
-            padding: 15px;
-            line-height: 1.6;
-            min-height: 100vh;
-            user-select: none;
-            transition: none;
+        body { font-family: 'Linux Libertine', Georgia, serif; background: #ffffff; color:#000; padding:15px; min-height:100vh; user-select:none;}
+        body.dark { background:#1a1a1a; color:#d5d5d5; }
+        .container { max-width:900px; margin:10px auto; padding:15px; position:relative; }
+        h1 { text-align:center; margin-bottom:12px; font-weight:bold; }
+        #display { font-size: clamp(36px,12vw,54px); text-align:center; font-weight:bold; margin:15px 0; font-family:monospace; }
+        .time-input { display:flex; justify-content:center; gap:8px 12px; margin:15px 0; font-family:monospace; }
+        .time-unit { width:70px; padding:10px; font-size:18px; text-align:center; border:1px solid #a2a9b1; border-radius:6px; background:white; }
+        .time-label { align-self:center; min-width:60px; text-align:center; color:#54595d; font-size:13px; }
+        #controls { display:flex; justify-content:center; gap:10px; margin:15px 0; flex-wrap:wrap; }
+        button { padding:12px 16px; min-height:48px; border-radius:6px; cursor:pointer; border:1px solid #a2a9b1; background:#f8f9fa; }
+        /* Progress bar area */
+        .progress-wrap { width:100%; max-width:760px; margin:12px auto 0; padding:0 15px; }
+        .progress-bar { position:relative; height:14px; background:#eee; border-radius:8px; overflow:hidden; cursor:pointer; border:1px solid #c84b4b; }
+        .progress-fill { position:absolute; left:0; top:0; height:100%; width:0%; background:linear-gradient(90deg,#ff4b4b,#ff1a1a); transition:width 0.2s linear; }
+        .tri {
+            position:absolute; width:0; height:0; border-left:10px solid transparent; border-right:10px solid transparent;
+            border-bottom:14px solid #ff1a1a; top:-12px; transform-origin:50% 50%;
+            transition: left 0.04s linear;
+            animation: spin 1s linear infinite;
         }
-        body.dark {
-            background: #1a1a1a !important;
-            color: #d5d5d5;
-        }
-        .rainbow-bg {
-            background: linear-gradient(90deg,
-                #ff3333, #ff9933, #ffff33, #33ff33, #33ffff, #3333ff, #cc33ff, #ff33cc, #ff3333);
-            background-size: 200% 100%;
-            animation: rainbowFlow 4s linear infinite;
-        }
-        @keyframes rainbowFlow {
-            0%   { background-position: 0% 50%; }
-            100% { background-position: 200% 50%; }
-        }
-        .container {
-            max-width: 900px;
-            margin: 10px auto;
-            padding: 15px;
-            background: inherit;
-            position: relative;
-            z-index: 1;
-        }
-        h1 {
-            font-size: clamp(1.8em, 6vw, 2.6em);
-            border-bottom: 1px solid #a2a9b1;
-            padding-bottom: 8px;
-            margin-bottom: 15px;
-            background: linear-gradient(90deg,
-                #ff0000, #ff7f00, #ffff00, #00ff00, #00ffff, #0000ff, #8b00ff, #ff00ff, #ff0000);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            font-weight: bold;
-            text-align: center;
-            background-size: 200% 100%;
-            animation: rainbowFlow 6s linear infinite;
-            letter-spacing: 1px;
-        }
-        #display {
-            font-size: clamp(36px, 12vw, 54px);
-            text-align: center;
-            font-weight: bold;
-            margin: 15px 0;
-            font-family: monospace;
-            transition: color 0s;
-        }
-        .time-input {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 8px 12px;
-            margin: 15px 0;
-            padding: 0 10px;
-            font-family: monospace;
-        }
-        .time-unit {
-            width: 70px;
-            padding: 10px;
-            font-size: 18px;
-            text-align: center;
-            border: 1px solid #a2a9b1;
-            border-radius: 6px;
-            background: white;
-        }
-        body.dark .time-unit { background: #333; border-color: #555; color: #fff; }
-        .time-label {
-            font-size: 13px;
-            color: #54595d;
-            align-self: center;
-            min-width: 60px;
-            text-align: center;
-        }
-        body.dark .time-label { color: #aaa; }
-        #controls {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 10px;
-            margin: 15px 0;
-        }
-        button {
-            padding: 12px 16px;
-            font-size: clamp(14px, 4vw, 18px);
-            min-height: 48px;
-            touch-action: manipulation;
-            border-radius: 6px;
-            cursor: pointer;
-            border: 1px solid #a2a9b1;
-            background: #f8f9fa;
-        }
-        body.dark button { background: #333; border-color: #555; color: #fff; }
-        #themeBtn { position: relative; }
-        #hiddenSquare {
-            width: 20px; height: 20px;
-            border: 1px solid #f0f0f0;
-            background: transparent;
-            cursor: pointer;
-            position: absolute;
-            bottom: -28px;
-            right: 8px;
-            z-index: 10;
-        }
-        body.dark #hiddenSquare { border-color: #2a2a2a; }
-
-        /* THINNER COLOR SLIDER */
-        #colorSlider {
-            display: none;
-            width: 90vw;
-            max-width: 320px;
-            height: 8px; /* Thinner bar */
-            margin: 15px auto;
-            border-radius: 4px;
-            background: linear-gradient(to right,
-                #ff0000, #ff7f00, #ffff00, #00ff00, #00ffff, #0000ff, #8b00ff, #ff00ff, #ff0000);
-            -webkit-appearance: none;
-            outline: none;
-            cursor: pointer;
-        }
-        #colorSlider::-webkit-slider-thumb {
-            -webkit-appearance: none;
-            width: 32px; height: 32px; /* Bigger than bar */
-            border-radius: 50%;
-            background: white;
-            border: 3px solid #333;
-            cursor: grab;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.3);
-        }
-        #colorSlider::-moz-range-thumb {
-            width: 32px; height: 32px;
-            border-radius: 50%;
-            background: white;
-            border: 3px solid #333;
-            cursor: grab;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.3);
-        }
-
-        #secret {
-            position: absolute;
-            bottom: 10px;
-            left: 0;
-            width: 100%;
-            text-align: center;
-            font-size: 14px;
-            color: transparent;
-            user-select: text;
-            pointer-events: none;
-            z-index: -1;
-        }
-        #flashWarning {
-            position: fixed;
-            top: 0; left: 0;
-            width: 100vw; height: 100vh;
-            background: rgba(0,0,0,0.92);
-            color: #fff;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            z-index: 9999;
-            padding: 20px;
-            text-align: center;
-            font-size: clamp(1em, 4vw, 1.4em);
-        }
-        #flashWarning button {
-            margin-top: 20px;
-            padding: 14px 28px;
-            font-size: 1.2em;
-            background: #ff4444;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-        }
+        @keyframes spin { from { transform: rotate(0deg);} to { transform: rotate(360deg);} }
+        .hidden { display:none; }
+        /* small responsive */
+        @media (max-width:480px){ .time-unit{width:58px; font-size:16px;} button{padding:10px 12px;} }
     </style>
 </head>
 <body>
-
-    <div id="flashWarning">
-        <h2>Warning</h2>
-        <p><strong>Timer end flashes every 0.5s (red to theme).</strong><br>
-        Safe, but may be startling.<br><br>
-        Tap to continue.</p>
-        <button onclick="document.getElementById('flashWarning').remove()">Continue</button>
-    </div>
-
     <div class="container">
         <h1>PLHKS Timer</h1>
         <div id="display">00:00:00</div>
@@ -208,9 +40,9 @@
         <div class="time-input" id="timeInputContainer">
             <input type="number" class="time-unit" id="hours" min="0" max="99" value="0">
             <span class="time-label">hours</span>
-            <input type="number" class="time-unit" id="minutes" min="0" max="59" value="0">
+            <input type="number" class="time-unit" id="minutes" min="0" max="99" value="0">
             <span class="time-label">minutes</span>
-            <input type="number" class="time-unit" id="seconds" min="0" max="59" value="0">
+            <input type="number" class="time-unit" id="seconds" min="0" max="99" value="0">
             <span class="time-label">seconds</span>
         </div>
 
@@ -220,110 +52,176 @@
             <button id="modeSwitch">Switch to Stopwatch</button>
             <button id="themeBtn">Dark Mode</button>
             <button id="fullscreenBtn">Full Screen</button>
-            <input type="range" id="colorSlider" min="0" max="360" value="180">
-            <div id="hiddenSquare"></div>
+        </div>
+
+        <div class="progress-wrap hidden" id="progressWrap">
+            <div class="progress-bar" id="progressBar" aria-hidden="true">
+                <div class="progress-fill" id="progressFill"></div>
+                <div class="tri" id="tri" style="left:0;"></div>
+            </div>
         </div>
     </div>
-
-    <div id="secret">made by Aprilfoolsupdate!</div>
 
     <audio id="alarmSound" preload="auto">
         <source src="data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBSuBzvLZiTYIG2m98OScTgwOUarm7blmFgU7k9n1unEiBC13yO/eizEIHWq+8+OWT" type="audio/wav">
     </audio>
 
     <script>
+        // Elements
         const display = document.getElementById('display');
         const startBtn = document.getElementById('startPause');
         const resetBtn = document.getElementById('reset');
         const modeBtn = document.getElementById('modeSwitch');
         const themeBtn = document.getElementById('themeBtn');
         const fullscreenBtn = document.getElementById('fullscreenBtn');
-        const hidden = document.getElementById('hiddenSquare');
-        const slider = document.getElementById('colorSlider');
         const hoursInput = document.getElementById('hours');
         const minutesInput = document.getElementById('minutes');
         const secondsInput = document.getElementById('seconds');
         const timeInputContainer = document.getElementById('timeInputContainer');
         const alarm = document.getElementById('alarmSound');
-        const body = document.body;
 
-        let isTimerMode = true, isRunning = false, time = 0, interval,
-            isDark = false, easterActive = false, mouseX = 0, mouseY = 0,
-            currentStep = 0, themeClickCount = 0, rainbowBgActive = false,
-            flashInterval = null, originalBg = '#ffffff', originalText = '';
+        const progressWrap = document.getElementById('progressWrap');
+        const progressBar = document.getElementById('progressBar');
+        const progressFill = document.getElementById('progressFill');
+        const tri = document.getElementById('tri');
 
-        const sequence = ['hidden','hidden','hidden','slider_min','theme','slider_max','start','start'];
+        // State
+        let isTimerMode = true, isRunning = false, time = 0, interval = null;
+        let startPressCount = 0, startPressTimer = null;
+        let progressActive = false; // progress bar shown
+        let totalDuration = 0; // total seconds for progress mapping
 
-        function hslToRgb(h, s, l) {
-            h /= 360;
-            let r, g, b;
-            if (s === 0) r = g = b = l;
-            else {
-                const hue2rgb = (p, q, t) => {
-                    if (t < 0) t += 1; if (t > 1) t -= 1;
-                    if (t < 1/6) return p + (q - p) * 6 * t;
-                    if (t < 1/2) return q;
-                    if (t < 2/3) return p + (q - p) * (2/3 - t) * 6;
-                    return p;
-                };
-                const q = l < 0.5 ? l * (1 + s) : l + s - l * s;
-                const p = 2 * l - q;
-                r = hue2rgb(p, q, h + 1/3);
-                g = hue2rgb(p, q, h);
-                b = hue2rgb(p, q, h - 1/3);
+        // Helpers
+        function pad(n){ return String(n).padStart(2,'0'); }
+        function secsToHMS(s){ const h = Math.floor(s/3600); const m = Math.floor((s%3600)/60); const sec = s%60; return `${pad(h)}:${pad(m)}:${pad(sec)}`; }
+        function updateDisplay(){ display.textContent = secsToHMS(time); updateProgressVisual(); }
+
+        // Input enforcement: disallow minutes/seconds >59 except the special triple-67 case
+        function enforceInputs() {
+            // convert to numbers
+            const h = Number(hoursInput.value || 0);
+            const m = Number(minutesInput.value || 0);
+            const s = Number(secondsInput.value || 0);
+            const isSpecial67 = (h===67 && m===67 && s===67);
+
+            // hours allowed up to 99 (no clamp here)
+            if (hoursInput.value === '') hoursInput.value = 0;
+
+            if (!isSpecial67) {
+                // clamp minutes and seconds to 59
+                if (m > 59) minutesInput.value = 59;
+                if (s > 59) secondsInput.value = 59;
+                if (minutesInput.value === '') minutesInput.value = 0;
+                if (secondsInput.value === '') secondsInput.value = 0;
+            } else {
+                // special case: keep 67 as input (do nothing)
             }
-            return `rgb(${Math.round(r * 255)}, ${Math.round(g * 255)}, ${Math.round(b * 255)})`;
         }
 
-        function updateDisplay() {
-            const h = Math.floor(time / 3600).toString().padStart(2, '0');
-            const m = Math.floor((time % 3600) / 60).toString().padStart(2, '0');
-            const s = (time % 60).toString().padStart(2, '0');
-            display.textContent = `${h}:${m}:${s}`;
+        hoursInput.addEventListener('input', enforceInputs);
+        minutesInput.addEventListener('input', enforceInputs);
+        secondsInput.addEventListener('input', enforceInputs);
+
+        // Progress bar functions
+        function showProgressBar() {
+            if (progressActive) return;
+            progressActive = true;
+            progressWrap.classList.remove('hidden');
+            // establish totalDuration and time mapping
+            totalDuration = getInputSeconds(); // initial total
+            if (!totalDuration) totalDuration = 1;
+            // ensure time has been set
+            time = Math.min(time, totalDuration);
+            updateProgressVisual();
+            // pointer events handled below
+        }
+        function hideProgressBar() {
+            progressActive = false;
+            progressWrap.classList.add('hidden');
+        }
+        function updateProgressVisual() {
+            if (!progressActive) return;
+            const percent = ((totalDuration - time) / totalDuration) * 100;
+            // percent progress of elapsed (0% at start, 100% when finished)
+            const clamped = Math.max(0, Math.min(100, percent));
+            progressFill.style.width = clamped + '%';
+            // move triangle to fill end (cap inside bar)
+            const barWidth = progressBar.clientWidth;
+            const px = (clamped / 100) * barWidth;
+            const triLeft = Math.max(0, Math.min(barWidth - 1, px - 10)); // offset so arrow sits on edge
+            tri.style.left = triLeft + 'px';
         }
 
-        function startFlashing() {
-            originalBg = isDark ? '#1a1a1a' : '#ffffff';
-            originalText = display.style.color || hslToRgb(slider.value, 1, 0.5);
-            let isRed = true;
-            flashInterval = setInterval(() => {
-                body.style.background = isRed ? '#ff0000' : originalBg;
-                display.style.color = isRed ? '#ffffff' : originalText;
-                isRed = !isRed;
-            }, 500);
-            setTimeout(stopFlashing, 6000);
+        // Map click/drag on progress bar to remaining time
+        function posToTime(clientX) {
+            const rect = progressBar.getBoundingClientRect();
+            const x = clientX - rect.left;
+            const pct = Math.max(0, Math.min(1, x / rect.width));
+            // pct = elapsed fraction; convert to remaining time
+            const elapsed = pct * totalDuration;
+            const newRemaining = Math.max(0, Math.round(totalDuration - elapsed));
+            return newRemaining;
         }
-
-        function stopFlashing() {
-            if (flashInterval) clearInterval(flashInterval);
-            body.style.background = originalBg;
-            display.style.color = originalText;
-        }
-
-        function timerTick() {
-            if (isTimerMode) {
-                if (time > 0) time--;
-                else {
-                    stopTimer();
-                    alarm.currentTime = 0;
-                    alarm.play();
-                    startFlashing();
-                }
-            } else time++;
+        let dragging = false;
+        progressBar.addEventListener('pointerdown', e => {
+            dragging = true;
+            progressBar.setPointerCapture(e.pointerId);
+            time = posToTime(e.clientX);
             updateDisplay();
+        });
+        progressBar.addEventListener('pointermove', e => {
+            if (!dragging) return;
+            time = posToTime(e.clientX);
+            updateDisplay();
+        });
+        progressBar.addEventListener('pointerup', e => {
+            dragging = false;
+            try { progressBar.releasePointerCapture(e.pointerId); } catch {}
+        });
+
+        // Timer logic
+        function getInputSeconds() {
+            const h = Number(hoursInput.value || 0);
+            const m = Number(minutesInput.value || 0);
+            const s = Number(secondsInput.value || 0);
+            // for special triple 67, interpret as special total: 67h 67m 67s => convert normally
+            return h*3600 + m*60 + s;
         }
 
         function startPause() {
-            checkSequence('start');
-            if (isRunning) stopTimer();
-            else {
+            // special start-press double detection: count presses when timer is NOT running
+            if (!isRunning) {
+                startPressCount++;
+                if (startPressTimer) clearTimeout(startPressTimer);
+                startPressTimer = setTimeout(()=>{ startPressCount = 0; }, 1200); // reset after 1.2s
+            }
+
+            // If in timer mode and inputs are the special triple 67 and user pressed Start twice quickly,
+            // show progress bar. We'll use startPressCount === 2 and not yet running.
+            const h = Number(hoursInput.value || 0), m = Number(minutesInput.value || 0), s = Number(secondsInput.value || 0);
+            const isSpecialTriple67 = (h === 67 && m === 67 && s === 67);
+
+            // If not running: set time from inputs first
+            if (!isRunning) {
                 if (isTimerMode) {
-                    const h = +hoursInput.value || 0;
-                    const m = +minutesInput.value || 0;
-                    const s = +secondsInput.value || 0;
-                    time = h * 3600 + m * 60 + s;
-                    if (!time) return;
+                    time = getInputSeconds();
+                    if (!time && !isSpecialTriple67) return; // nothing to start
+                } else {
+                    // stopwatch: start from 0
+                    time = 0;
                 }
+            }
+
+            // If special triple and double-press, toggle / show progress bar
+            if (!isRunning && isTimerMode && isSpecialTriple67 && startPressCount === 2) {
+                // prepare progress bar where totalDuration is the time set
+                totalDuration = time || 1;
+                showProgressBar();
+            }
+
+            if (isRunning) {
+                stopTimer();
+            } else {
                 interval = setInterval(timerTick, 1000);
                 startBtn.textContent = 'Pause';
             }
@@ -332,124 +230,62 @@
 
         function stopTimer() {
             clearInterval(interval);
+            interval = null;
             isRunning = false;
             startBtn.textContent = 'Start';
         }
 
-        function reset() {
-            stopTimer(); stopFlashing(); time = 0; updateDisplay();
+        function resetAll() {
+            stopTimer();
+            time = 0;
+            totalDuration = 0;
+            updateDisplay();
             hoursInput.value = minutesInput.value = secondsInput.value = 0;
+            hideProgressBar();
         }
 
+        function timerTick() {
+            if (isTimerMode) {
+                if (time > 0) {
+                    time--;
+                } else {
+                    // reached zero
+                    stopTimer();
+                    alarm.currentTime = 0;
+                    alarm.play().catch(()=>{});
+                    // flash / keep progress full
+                    time = 0;
+                }
+            } else {
+                time++;
+            }
+            updateDisplay();
+        }
+
+        // Mode, theme, fullscreen basic hooks (kept minimal)
         function switchMode() {
             isTimerMode = !isTimerMode;
             modeBtn.textContent = isTimerMode ? 'Switch to Stopwatch' : 'Switch to Timer';
             timeInputContainer.style.display = isTimerMode ? 'flex' : 'none';
-            reset();
+            resetAll();
         }
-
-        function switchTheme() {
-            checkSequence('theme');
-            themeClickCount++;
-            if (themeClickCount === 5) {
-                body.classList.add('rainbow-bg');
-                rainbowBgActive = true;
-                setTimeout(() => {
-                    if (rainbowBgActive) {
-                        body.classList.remove('rainbow-bg');
-                        rainbowBgActive = false;
-                        themeClickCount = 0;
-                    }
-                }, 8000);
-            }
-            setTimeout(() => { if (themeClickCount < 5) themeClickCount = 0; }, 3000);
-
-            isDark = !isDark;
-            isDark ? body.classList.add('dark') : body.classList.remove('dark');
-            themeBtn.textContent = isDark ? 'Bright Mode' : 'Dark Mode';
-            originalBg = isDark ? '#1a1a1a' : '#ffffff';
-        }
-
+        function switchTheme() { document.body.classList.toggle('dark'); }
         function toggleFullScreen() {
-            document.fullscreenElement ? document.exitFullscreen() : document.documentElement.requestFullscreen();
-            fullscreenBtn.textContent = document.fullscreenElement ? 'Exit Full Screen' : 'Full Screen';
+            if (document.fullscreenElement) document.exitFullscreen();
+            else document.documentElement.requestFullscreen();
         }
 
-        hidden.addEventListener('click', e => {
-            e.stopPropagation();
-            checkSequence('hidden');
-            slider.style.display = 'block';
-        });
-
-        slider.oninput = function () {
-            const hue = this.value;
-            display.style.color = hslToRgb(hue, 1, 0.5);
-            if (hue == 0) checkSequence('slider_min');
-            if (hue == 360) checkSequence('slider_max');
-        };
-
-        function checkSequence(action) {
-            if (sequence[currentStep] === action) {
-                currentStep++;
-                if (currentStep === sequence.length) activateEaster();
-            } else if (action !== 'slider_min' && action !== 'slider_max') {
-                currentStep = 0;
-            }
-        }
-
-        function activateEaster() {
-            if (easterActive) return;
-            easterActive = true;
-            startBtn.style.position = 'absolute';
-            startBtn.style.transition = 'none';
-            startBtn.style.zIndex = '1000';
-            startBtn.style.pointerEvents = 'auto';
-            const r = startBtn.getBoundingClientRect();
-            startBtn.style.left = r.left + 'px';
-            startBtn.style.top = r.top + 'px';
-            document.addEventListener('mousemove', e => { mouseX = e.clientX; mouseY = e.clientY; });
-            requestAnimationFrame(animate);
-        }
-
-        function animate() {
-            if (easterActive) {
-                moveButton();
-                requestAnimationFrame(animate);
-            }
-        }
-
-        function moveButton() {
-            const r = startBtn.getBoundingClientRect();
-            const w = r.width, h = r.height;
-            const cx = r.left + w / 2, cy = r.top + h / 2;
-            const dx = mouseX - cx, dy = mouseY - cy;
-            const dist = Math.hypot(dx, dy);
-            if (dist < 300) {
-                const ang = Math.atan2(dy, dx) + Math.PI;
-                // FASTER: base speed 0.5 ¡ú 0.8, max 3.5
-                const speed = Math.max(0.8, 3.5 - dist / 100);
-                let nx = parseFloat(startBtn.style.left) + Math.cos(ang) * speed;
-                let ny = parseFloat(startBtn.style.top) + Math.sin(ang) * speed;
-                const ww = window.innerWidth, wh = window.innerHeight;
-                if (nx < -w) nx += ww + w; if (nx > ww) nx -= ww + w;
-                if (ny < -h) ny += wh + h; if (ny > wh) ny -= wh + h;
-                startBtn.style.left = nx + 'px';
-                startBtn.style.top = ny + 'px';
-            }
-        }
-
-        // INIT
+        // Initialize
         updateDisplay();
-        timeInputContainer.style.display = 'flex';
-        slider.style.display = 'none';
-        display.style.color = hslToRgb(180, 1, 0.5);
-        originalBg = '#ffffff';
-
+        // Hook events
         startBtn.onclick = startPause;
-        resetBtn.onclick = reset;
+        resetBtn.onclick = resetAll;
         modeBtn.onclick = switchMode;
         themeBtn.onclick = switchTheme;
         fullscreenBtn.onclick = toggleFullScreen;
+
+        // Keep progress synced if visible even when window resizes
+        window.addEventListener('resize', ()=> requestAnimationFrame(updateProgressVisual));
     </script>
 </body>
 </html>
