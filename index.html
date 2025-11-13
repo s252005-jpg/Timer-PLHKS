@@ -282,7 +282,42 @@
 
         // Reliable 5-click rainbow trigger within 3 seconds, plus dark/bright toggle
         function switchTheme() {
-            checkSequence('theme');
+    checkSequence('theme');
+
+    // Toggle dark/bright mode
+    isDark = !isDark;
+    isDark ? body.classList.add('dark') : body.classList.remove('dark');
+    themeBtn.textContent = isDark ? 'Bright Mode' : 'Dark Mode';
+    originalBg = isDark ? '#1a1a1a' : '#ffffff';
+
+    // Rainbow trigger: count clicks in a 3s window
+    themeClickCount++;
+
+    if (themeClickCount === 1) {
+        if (window.__themeWindowTimer) clearTimeout(window.__themeWindowTimer);
+        window.__themeWindowTimer = setTimeout(() => {
+            themeClickCount = 0;
+            window.__themeWindowTimer = null;
+        }, 3000);
+    }
+
+    if (themeClickCount === 5) {
+        themeClickCount = 0;
+        if (window.__themeWindowTimer) {
+            clearTimeout(window.__themeWindowTimer);
+            window.__themeWindowTimer = null;
+        }
+        body.classList.add('rainbow-bg');
+        rainbowBgActive = true;
+        setTimeout(() => {
+            if (rainbowBgActive) {
+                body.classList.remove('rainbow-bg');
+                rainbowBgActive = false;
+            }
+        }, 8000);
+    }
+}
+
 
             // Toggle dark/bright
             isDark = !isDark;
@@ -468,3 +503,4 @@
     </script>
 </body>
 </html>
+
