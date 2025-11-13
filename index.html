@@ -426,7 +426,7 @@
             const dist = Math.hypot(dx, dy);
             if (dist < 300) {
                 const ang = Math.atan2(dy, dx) + Math.PI;
-                // FASTER: base speed 0.5 ¡ú 0.8, max 3.5
+                // FASTER: base speed 0.5 â†’ 0.8, max 3.5
                 const speed = Math.max(0.8, 3.5 - dist / 100);
                 let nx = parseFloat(startBtn.style.left) + Math.cos(ang) * speed;
                 let ny = parseFloat(startBtn.style.top) + Math.sin(ang) * speed;
