@@ -63,6 +63,19 @@
             font-family: monospace;
             transition: color 0s;
         }
+
+        /* Progress bar for the 67 easter */
+        .progress-wrap { width: 100%; max-width: 760px; margin: 8px auto 0; padding: 0 10px; }
+        .progress-bar { position: relative; height: 14px; background: #eee; border-radius: 8px; overflow: hidden; cursor: pointer; border: 1px solid #c84b4b; }
+        .progress-fill { position: absolute; left: 0; top: 0; height: 100%; width: 0%; background: linear-gradient(90deg,#ff4b4b,#ff1a1a); transition: width 0.15s linear; }
+        .tri {
+            position: absolute; width: 0; height: 0; border-left: 10px solid transparent; border-right: 10px solid transparent;
+            border-bottom: 14px solid #ff1a1a; top: -12px; transform-origin: 50% 50%;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin { from {transform: rotate(0deg)} to {transform: rotate(360deg)} }
+        .hidden { display: none; }
+
         .time-input {
             display: flex;
             flex-wrap: wrap;
@@ -205,12 +218,21 @@
         <h1>PLHKS Timer</h1>
         <div id="display">00:00:00</div>
 
+        <!-- 67 easter progress bar (hidden by default) -->
+        <div class="progress-wrap hidden" id="progressWrap">
+            <div class="progress-bar" id="progressBar" aria-hidden="true">
+                <div class="progress-fill" id="progressFill"></div>
+                <div class="tri" id="tri" style="left:0;"></div>
+            </div>
+        </div>
+
         <div class="time-input" id="timeInputContainer">
             <input type="number" class="time-unit" id="hours" min="0" max="99" value="0">
             <span class="time-label">hours</span>
-            <input type="number" class="time-unit" id="minutes" min="0" max="59" value="0">
+            <!-- changed max to 99 so JS can manage special case -->
+            <input type="number" class="time-unit" id="minutes" min="0" max="99" value="0">
             <span class="time-label">minutes</span>
-            <input type="number" class="time-unit" id="seconds" min="0" max="59" value="0">
+            <input type="number" class="time-unit" id="seconds" min="0" max="99" value="0">
             <span class="time-label">seconds</span>
         </div>
 
@@ -247,10 +269,19 @@
         const alarm = document.getElementById('alarmSound');
         const body = document.body;
 
+        const progressWrap = document.getElementById('progressWrap');
+        const progressBar = document.getElementById('progressBar');
+        const progressFill = document.getElementById('progressFill');
+        const tri = document.getElementById('tri');
+
         let isTimerMode = true, isRunning = false, time = 0, interval,
             isDark = false, easterActive = false, mouseX = 0, mouseY = 0,
             currentStep = 0, themeClickCount = 0, rainbowBgActive = false,
             flashInterval = null, originalBg = '#ffffff', originalText = '';
+
+        // 67 easter state
+        let startPressCount = 0, startPressTimer = null;
+        let progressActive = false, totalDuration = 0, dragging = false;
 
         const sequence = ['hidden','hidden','hidden','slider_min','theme','slider_max','start','start'];
 
@@ -280,6 +311,7 @@
             const m = Math.floor((time % 3600) / 60).toString().padStart(2, '0');
             const s = (time % 60).toString().padStart(2, '0');
             display.textContent = `${h}:${m}:${s}`;
+            updateProgressVisual();
         }
 
         function startFlashing() {
@@ -315,19 +347,38 @@
 
         function startPause() {
             checkSequence('start');
-            if (isRunning) stopTimer();
-            else {
+
+            // Count quick presses when not running (for 67 easter)
+            if (!isRunning) {
+                startPressCount++;
+                if (startPressTimer) clearTimeout(startPressTimer);
+                startPressTimer = setTimeout(() => { startPressCount = 0; }, 1200);
+            }
+
+            if (isRunning) {
+                stopTimer();
+            } else {
                 if (isTimerMode) {
                     const h = +hoursInput.value || 0;
                     const m = +minutesInput.value || 0;
                     const s = +secondsInput.value || 0;
+
+                    // Allow special triple-67
+                    const isSpecialTriple67 = (h === 67 && m === 67 && s === 67);
+
                     time = h * 3600 + m * 60 + s;
-                    if (!time) return;
+                    if (!time && !isSpecialTriple67) return;
+
+                    // Trigger showing progress bar only when triple-67 and double press
+                    if (!isRunning && isSpecialTriple67 && startPressCount === 2) {
+                        totalDuration = time || 1;
+                        showProgressBar();
+                    }
                 }
                 interval = setInterval(timerTick, 1000);
                 startBtn.textContent = 'Pause';
+                isRunning = true;
             }
-            isRunning = !isRunning;
         }
 
         function stopTimer() {
@@ -339,6 +390,7 @@
         function reset() {
             stopTimer(); stopFlashing(); time = 0; updateDisplay();
             hoursInput.value = minutesInput.value = secondsInput.value = 0;
+            hideProgressBar();
         }
 
         function switchMode() {
@@ -426,7 +478,7 @@
             const dist = Math.hypot(dx, dy);
             if (dist < 300) {
                 const ang = Math.atan2(dy, dx) + Math.PI;
-                // FASTER: base speed 0.5 ¡ú 0.8, max 3.5
+                // FASTER: base speed 0.5 â†’ 0.8, max 3.5
                 const speed = Math.max(0.8, 3.5 - dist / 100);
                 let nx = parseFloat(startBtn.style.left) + Math.cos(ang) * speed;
                 let ny = parseFloat(startBtn.style.top) + Math.sin(ang) * speed;
@@ -437,6 +489,74 @@
                 startBtn.style.top = ny + 'px';
             }
         }
+
+        // 67 easter: input enforcement (allow 67 only if all three are 67)
+        function enforceInputs() {
+            const h = Number(hoursInput.value || 0);
+            const m = Number(minutesInput.value || 0);
+            const s = Number(secondsInput.value || 0);
+            const isSpecial67 = (h === 67 && m === 67 && s === 67);
+
+            if (!isSpecial67) {
+                if (m > 59) minutesInput.value = 59;
+                if (s > 59) secondsInput.value = 59;
+            }
+            if (hoursInput.value === '') hoursInput.value = 0;
+            if (minutesInput.value === '') minutesInput.value = 0;
+            if (secondsInput.value === '') secondsInput.value = 0;
+        }
+        hoursInput.addEventListener('input', enforceInputs);
+        minutesInput.addEventListener('input', enforceInputs);
+        secondsInput.addEventListener('input', enforceInputs);
+
+        // 67 easter: progress bar functions
+        function showProgressBar() {
+            if (progressActive) return;
+            progressActive = true;
+            progressWrap.classList.remove('hidden');
+            totalDuration = (+hoursInput.value || 0) * 3600 + (+minutesInput.value || 0) * 60 + (+secondsInput.value || 0);
+            if (!totalDuration) totalDuration = 1;
+            time = Math.min(time, totalDuration);
+            updateProgressVisual();
+        }
+        function hideProgressBar() {
+            progressActive = false;
+            progressWrap.classList.add('hidden');
+        }
+        function updateProgressVisual() {
+            if (!progressActive || totalDuration <= 0) return;
+            const percentElapsed = ((totalDuration - time) / totalDuration) * 100;
+            const clamped = Math.max(0, Math.min(100, percentElapsed));
+            progressFill.style.width = clamped + '%';
+            const barWidth = progressBar.clientWidth;
+            const px = (clamped / 100) * barWidth;
+            const triLeft = Math.max(0, Math.min(barWidth - 1, px - 10));
+            tri.style.left = triLeft + 'px';
+        }
+        function posToRemaining(clientX) {
+            const rect = progressBar.getBoundingClientRect();
+            const x = clientX - rect.left;
+            const pct = Math.max(0, Math.min(1, x / rect.width));
+            const elapsed = Math.round(pct * totalDuration);
+            return Math.max(0, totalDuration - elapsed);
+        }
+        progressBar.addEventListener('pointerdown', e => {
+            if (!progressActive) return;
+            dragging = true;
+            progressBar.setPointerCapture(e.pointerId);
+            time = posToRemaining(e.clientX);
+            updateDisplay();
+        });
+        progressBar.addEventListener('pointermove', e => {
+            if (!dragging || !progressActive) return;
+            time = posToRemaining(e.clientX);
+            updateDisplay();
+        });
+        progressBar.addEventListener('pointerup', e => {
+            dragging = false;
+            try { progressBar.releasePointerCapture(e.pointerId); } catch {}
+        });
+        window.addEventListener('resize', () => requestAnimationFrame(updateProgressVisual));
 
         // INIT
         updateDisplay();
